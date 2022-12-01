@@ -5,15 +5,14 @@ import Login from './Component/Login';
 import Register from './Component/Register';
 import Dummy from './Component/Dummy';
 import Footer from './Component/Footer';
+import Home from './Component/Home';
 const App = () => {
   return (
     <div>
       <Navbar/>
       
       <div className="container-fluid  p-5">
-      <Dummy/>
-      {/* <Login/> */}
-      <Register/>
+      <Home/>
       </div>
       
       <Footer/>
