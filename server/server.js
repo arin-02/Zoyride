@@ -10,6 +10,7 @@ mongodb();
 
 
 app.use(express.json())
+app.use(cors())
 app.use(require('./Router/Auth'));
 
 

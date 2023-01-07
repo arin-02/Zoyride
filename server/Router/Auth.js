@@ -1,6 +1,7 @@
 const express=require('express');
+// const jwt=require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const jswt=require('jsonwebtoken');
+// const jswt=require('jsonwebtoken');
 const router=express.Router();
 require('../ComponentBackend/Mongodb');
 const Userteacher=require('../Model/Userschema');
@@ -48,12 +49,12 @@ router.get('/', (req,res)=>{
 
 router.post('/register',async(req,res)=>{
 
-    const {name,email,password,cpassword,subject,phoneNum,address,class_standard}=req.body;
+    const { tagname, nameofuser:name,email,password,cpassword,subject,phoneNum,address,class_standard}=req.body.userinfo;
 
     // console.log(req.body);
 
 
-    if(!name || !email || !password|| !cpassword || !subject || !phoneNum || !address||!class_standard)
+    if(!tagname ||!name || !email || !password|| !cpassword || !subject || !phoneNum || !address||!class_standard)
     {
         return res.status(422).json({error:"please fill the fields properly"});
     }
@@ -66,7 +67,7 @@ router.post('/register',async(req,res)=>{
                 res.status(422).json({error:"phoneNum already exist"});
             }
             
-            const adduser=new Userteacher({name:name,email:email,password:password,cpassword:cpassword,subject:subject,phoneNum:phoneNum,address:address,class_standard:class_standard})
+            const adduser=new Userteacher({tagname:tagname,name:name,email:email,password:password,cpassword:cpassword,subject:subject,phoneNum:phoneNum,address:address,class_standard:class_standard})
 
            const userregister= await adduser.save();
             if(userregister)
@@ -90,8 +91,9 @@ router.post('/register',async(req,res)=>{
 // LOGIN Route
 router.post('/login',async(req,res)=>{
     try{
-        const { email , password }  = req.body;
-        if( !email || !password )
+        // let token;
+        const { tagname ,email , password }  = req.body.loginuserinfo;
+        if( !tagname || !email || !password  )
         {
             return res.status(400).json({error:"please enter a valid field"});
         }
@@ -102,8 +104,13 @@ router.post('/login',async(req,res)=>{
         {
             const ismatch= await bcrypt.compare(password,userlogin.password);
 
-            const token= await userlogin.generateAuthToken();
-            console.log(token);
+            // const token= await userlogin.generateAuthToken();
+            // console.log(token);
+            
+            // res.cookie("jetoken",token,{
+            //     expires:new Date(Date.now()+25892000000),
+            //     httpOnly:true
+            // });
 
             if(!ismatch)
             {
@@ -112,7 +119,7 @@ router.post('/login',async(req,res)=>{
             }
             else
             {
-                res.json({message:"successfully login"});
+                res.json({ email,tagname,password});
                 
             }
         }

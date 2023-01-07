@@ -1,6 +1,11 @@
 const mongoose=require("mongoose")
 const bcrypt=require("bcrypt")
+const jwt=require("jsonwebtoken");
 const Userschema= new mongoose.Schema({
+    tagname: {
+        type:String,
+        required: true
+    },
     name: {
         type:String,
         required: true
@@ -33,14 +38,14 @@ const Userschema= new mongoose.Schema({
         type:Array,
         required: true
     },
-    tokens: [
-        {
-            token:{
-                type:String,
-                required:true
-            }
-        }
-    ]
+    // tokens: [
+    //     {
+    //         token:{
+    //             type:String,
+    //             required:true
+    //         }
+    //     }
+    // ]
 
 })
 Userschema.pre('save', async function (next){
@@ -53,16 +58,16 @@ Userschema.pre('save', async function (next){
 })
 
 // generating token
-Userschema.method.generateAuthToken = async function(){
-    try {
-        let tokenarin =jwt.sign({_id:this._id},process.env.SECRET_KEY);
-        this.tokens = this.tokens.concat({token:tokenarin});
-        await this.save();
-        return token;
-    }catch(err){
-        console.log(err);
-    }
-}
+// Userschema.methods.generateAuthToken = async function(){
+//     try {
+//         let tokenarin =jwt.sign({_id:this._id},process.env.SECRET_KEY);
+//         this.tokens = this.tokens.concat({token:tokenarin});
+//         await this.save();
+//         return token;
+//     }catch(err){
+//         console.log(err);
+//     }
+// }
 const Userteacher=mongoose.model('arinmerncollection',Userschema);
 
 module.exports = Userteacher;
